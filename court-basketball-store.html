@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COURT. — Basketball Gear Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0C2340;
+    --red:#C8102E;
+    --blue:#1D4E89;
+    --paper:#F3F5F7;
+    --panel:#FFFFFF;
+    --steel:#5B6472;
+    --line:#E1E6EA;
+    --mist:#EDF1F5;
+    --signal:#2E8B57;
+    --warn:#E8871E;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Kanit', sans-serif;
+    background:var(--paper);
+    color:var(--navy);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.brand{font-family:'Kanit', sans-serif; font-weight:800; letter-spacing:-0.01em;}
+  .mono{font-family:'Chakra Petch', monospace;}
+  a{color:inherit; text-decoration:none;}
+  ::selection{background:var(--red); color:#fff;}
+
+  /* ---------- Button system ---------- */
+  .key{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    background:var(--panel);
+    border:2px solid var(--navy);
+    border-radius:4px;
+    padding:11px 20px;
+    font-family:'Kanit', sans-serif;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:.01em;
+    cursor:pointer;
+    transition: transform .12s ease, background .12s ease, color .12s ease, border-color .12s ease;
+    user-select:none;
+  }
+  .key:hover{ transform:skewX(-6deg); }
+  .key:hover span{ display:inline-block; transform:skewX(6deg); }
+  .key.solid{ background:var(--red); color:#fff; border-color:var(--red); }
+  .key.solid:hover{ background:#A50D26; }
+  .key.navy-solid{ background:var(--navy); color:#fff; border-color:var(--navy); }
+  .key.ghost{ border-color:var(--line); }
+  .key.ghost:hover{ border-color:var(--navy); }
+  .key.active-nav{ background:var(--navy); color:#fff; border-color:var(--navy); }
+  .key.small{ padding:7px 14px; font-size:12px; }
+  .key.wide{ width:100%; padding:15px 18px; font-size:15px; }
+
+  /* ---------- Nav ---------- */
+  header.topnav{
+    position:sticky; top:0; z-index:50;
+    background:var(--panel);
+    border-bottom:3px solid var(--navy);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 5vw;
+  }
+  .brand{ font-size:24px; letter-spacing:-0.02em; display:flex; align-items:center; gap:8px; }
+  .brand .dot{ color:var(--red); }
+  .brand .stripe{ width:22px; height:12px; background:linear-gradient(115deg, var(--red) 50%, var(--blue) 50%); border-radius:2px; }
+  nav.links{ display:flex; gap:10px; align-items:center; }
+  .cart-count{
+    background:var(--red); color:#fff; font-family:'Chakra Petch',monospace;
+    font-size:10px; border-radius:20px; padding:1px 6px; margin-left:6px;
+  }
+
+  main{ max-width:1180px; margin:0 auto; padding:0 5vw 80px; }
+  .page{ display:none; animation: fade .25s ease; }
+  .page.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  .eyebrow{
+    font-family:'Chakra Petch', monospace; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--red); display:flex; align-items:center; gap:8px; font-weight:600;
+  }
+  .eyebrow::before{ content:''; width:18px; height:3px; background:var(--red); display:inline-block; }
+  .divider{ height:3px; background:var(--line); margin:40px 0; }
+
+  /* ---------- HOME ---------- */
+  .hero{
+    display:grid; grid-template-columns:1.1fr .9fr; gap:60px;
+    padding:70px 0 40px; align-items:center; position:relative; overflow:hidden;
+  }
+  .hero h1{
+    font-size:clamp(38px,5vw,66px); line-height:0.98; letter-spacing:-0.02em;
+    margin:14px 0 20px; text-transform:uppercase;
+  }
+  .hero h1 .accent{ color:var(--red); }
+  .hero p{ color:var(--steel); font-size:16px; max-width:440px; margin-bottom:28px; }
+  .hero-actions{ display:flex; gap:12px; }
+  .court-art{
+    aspect-ratio:1/1; border:3px solid var(--navy); border-radius:14px;
+    background:var(--navy);
+    position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .court-art .num{
+    position:absolute; font-family:'Kanit',sans-serif; font-weight:800; font-size:220px;
+    color:rgba(255,255,255,0.08); line-height:1; top:-10px; right:-20px;
+  }
+  .court-art svg{ width:55%; position:relative; z-index:2; }
+  .court-art .tag{
+    position:absolute; top:16px; left:16px; font-family:'Chakra Petch',monospace; font-size:11px;
+    border:1px solid #fff; border-radius:4px; padding:3px 8px; color:#fff; z-index:3;
+  }
+  .court-art .tag.corner{ top:auto; bottom:16px; right:16px; left:auto; background:var(--red); border-color:var(--red); }
+
+  .scoreboard{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    background:var(--navy); border-radius:8px; overflow:hidden; margin:20px 0 60px;
+  }
+  .scoreboard div{
+    padding:20px 20px; border-right:1px solid rgba(255,255,255,0.15); color:#fff;
+  }
+  .scoreboard div:last-child{ border-right:none; }
+  .scoreboard .num{ font-family:'Chakra Petch',monospace; font-size:28px; font-weight:700; color:#fff; }
+  .scoreboard .lbl{ font-size:11px; color:rgba(255,255,255,0.6); margin-top:2px; text-transform:uppercase; letter-spacing:.06em; }
+
+  .cat-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .cat-card{
+    border:2px solid var(--navy); border-radius:10px; padding:22px;
+    background:var(--panel); cursor:pointer; transition:transform .1s ease, background .1s ease;
+    position:relative; overflow:hidden;
+  }
+  .cat-card:hover{ transform:translateY(-3px); }
+  .cat-card::before{ content:''; position:absolute; top:0; left:0; width:6px; height:100%; background:var(--red); }
+  .cat-card .ic{ font-size:26px; margin-bottom:14px; }
+  .cat-card h3{ font-size:16px; margin-bottom:4px; font-weight:600; }
+  .cat-card p{ font-size:12px; color:var(--steel); font-family:'Chakra Petch',monospace; }
+
+  /* ---------- PRODUCTS ---------- */
+  .filter-row{ display:flex; gap:10px; flex-wrap:wrap; margin:26px 0 30px; }
+  .product-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+  .p-card{
+    border:2px solid var(--navy); border-radius:10px; background:var(--panel);
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  .p-thumb{
+    aspect-ratio:1/1; background:var(--mist); border-bottom:2px solid var(--navy);
+    display:flex; align-items:center; justify-content:center; position:relative;
+  }
+  .p-thumb svg{ width:46%; }
+  .stock-dot{
+    position:absolute; top:10px; left:10px; display:flex; align-items:center; gap:5px;
+    font-family:'Chakra Petch',monospace; font-size:10px; background:var(--panel);
+    border:1px solid var(--navy); border-radius:20px; padding:3px 8px 3px 6px;
+  }
+  .stock-dot i{ width:6px; height:6px; border-radius:50%; background:var(--signal); display:inline-block; }
+  .p-body{ padding:16px; display:flex; flex-direction:column; gap:10px; flex:1; }
+  .p-body h3{ font-size:15px; font-weight:600; }
+  .spec-rows{ font-family:'Chakra Petch',monospace; font-size:11px; color:var(--steel); }
+  .spec-rows div{ display:flex; justify-content:space-between; padding:3px 0; border-top:1px dashed var(--line); }
+  .spec-rows div:first-child{ border-top:none; }
+  .p-footer{ display:flex; align-items:center; justify-content:space-between; margin-top:auto; }
+  .price{ font-family:'Chakra Petch',monospace; font-weight:700; font-size:16px; color:var(--red); }
+
+  /* ---------- FORMS ---------- */
+  .form-wrap{ max-width:460px; margin:40px auto; }
+  .field{ margin-bottom:18px; }
+  .field label{ display:block; font-size:12px; font-family:'Chakra Petch',monospace; margin-bottom:6px; color:var(--steel); }
+  .field input, .field select{
+    width:100%; padding:12px 14px; border:2px solid var(--navy); border-radius:6px;
+    font-family:'Kanit', sans-serif; font-size:14px; background:var(--panel); color:var(--navy);
+  }
+  .field input:focus, .field select:focus{ outline:2px solid var(--red); outline-offset:1px; }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .form-title{ text-align:center; margin-bottom:6px; font-size:28px; text-transform:uppercase; }
+  .form-sub{ text-align:center; color:var(--steel); font-size:13px; margin-bottom:30px; }
+  .form-foot{ text-align:center; font-size:13px; color:var(--steel); margin-top:20px; }
+
+  /* ---------- CART ---------- */
+  .cart-layout{ display:grid; grid-template-columns:1.6fr 1fr; gap:40px; margin-top:30px; }
+  .cart-item{
+    display:grid; grid-template-columns:70px 1.4fr auto auto; gap:16px; align-items:center;
+    padding:16px 0; border-bottom:2px solid var(--line);
+  }
+  .cart-item .thumb{
+    width:70px; height:70px; background:var(--mist); border:2px solid var(--navy); border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cart-item .thumb svg{ width:60%; }
+  .cart-item h4{ font-size:14px; margin-bottom:4px; font-weight:600; }
+  .cart-item .sub{ font-size:11px; color:var(--steel); font-family:'Chakra Petch',monospace; }
+  .qty-stepper{ display:flex; align-items:center; border:2px solid var(--navy); border-radius:6px; overflow:hidden; }
+  .qty-stepper button{ background:var(--panel); border:none; width:30px; height:30px; cursor:pointer; font-family:'Chakra Petch',monospace; font-size:14px; }
+  .qty-stepper button:hover{ background:var(--mist); }
+  .qty-stepper span{ width:30px; text-align:center; font-family:'Chakra Petch',monospace; font-size:13px; }
+
+  .summary-box{ border:2px solid var(--navy); border-radius:10px; padding:24px; height:fit-content; }
+  .summary-row{ display:flex; justify-content:space-between; font-size:14px; margin-bottom:12px; }
+  .summary-row.total{ font-weight:700; font-size:19px; margin-top:16px; padding-top:16px; border-top:2px dashed var(--line); }
+  .summary-row .val{ font-family:'Chakra Petch',monospace; }
+  .summary-row.total .val{ color:var(--red); }
+  .promo{ display:flex; gap:8px; margin:18px 0; }
+  .promo input{ flex:1; padding:10px 12px; border:2px solid var(--navy); border-radius:6px; font-family:'Chakra Petch',monospace; font-size:12px; }
+
+  /* ---------- SHIPPING ---------- */
+  .ship-layout{ display:grid; grid-template-columns:1.4fr 1fr; gap:40px; margin-top:30px; }
+  .ship-method{
+    border:2px solid var(--navy); border-radius:8px; padding:16px; display:flex; justify-content:space-between;
+    align-items:center; margin-bottom:12px; cursor:pointer;
+  }
+  .ship-method.selected{ background:var(--navy); color:#fff; }
+  .ship-method .eta{ font-size:12px; color:var(--steel); }
+  .ship-method.selected .eta{ color:#b9c3d1; }
+  .ship-method .price{ font-size:14px; color:inherit; }
+
+  footer{
+    border-top:3px solid var(--navy); padding:30px 5vw; margin-top:60px;
+    display:flex; justify-content:space-between; font-size:12px; color:var(--steel);
+    font-family:'Chakra Petch',monospace;
+  }
+
+  @media (max-width: 900px){
+    header.topnav{ padding:14px 5vw; flex-wrap:wrap; gap:10px; }
+    .brand{ font-size:19px; }
+    nav.links{ gap:6px; flex-wrap:wrap; }
+    nav.links .key{ padding:8px 12px; font-size:11.5px; }
+    main{ padding:0 6vw 60px; }
+    .hero{ grid-template-columns:1fr; gap:32px; padding:36px 0 24px; }
+    .hero h1{ font-size:34px; }
+    .hero-actions{ flex-wrap:wrap; }
+    .scoreboard{ grid-template-columns:repeat(2,1fr); }
+    .scoreboard div{ border-right:1px solid rgba(255,255,255,0.15); border-bottom:1px solid rgba(255,255,255,0.15); }
+    .scoreboard div:nth-child(2n){ border-right:none; }
+    .cat-grid{ grid-template-columns:repeat(2,1fr); }
+    .filter-row{ gap:8px; }
+    .filter-row .key{ font-size:12px; padding:8px 14px; }
+    .product-grid{ grid-template-columns:repeat(2,1fr); gap:12px; }
+    .p-body{ padding:12px; }
+    .p-body h3{ font-size:13.5px; }
+    .form-wrap{ margin:28px auto; }
+    .field-row{ grid-template-columns:1fr; gap:0; }
+    .cart-layout, .ship-layout{ grid-template-columns:1fr; gap:28px; }
+    .cart-item{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+    .cart-item .thumb{ width:56px; height:56px; }
+    .cart-item > div:nth-child(2){ flex:1; min-width:140px; }
+    .cart-item .qty-stepper{ order:3; margin-left:68px; }
+    .cart-item .price{ order:4; margin-left:auto; }
+    footer{ flex-direction:column; gap:6px; text-align:center; }
+  }
+  @media (max-width: 460px){
+    .hero h1{ font-size:28px; }
+    .product-grid{ grid-template-columns:1fr; }
+    .cat-grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <div class="brand"><span class="stripe"></span>COURT<span class="dot">.</span></div>
+  <nav class="links">
+    <a class="key active-nav" data-nav="home" onclick="showPage('home', this)"><span>หน้าหลัก</span></a>
+    <a class="key ghost" data-nav="products" onclick="showPage('products', this)"><span>สินค้า</span></a>
+    <a class="key ghost" data-nav="cart" onclick="showPage('cart', this)"><span>ตะกร้า</span><span class="cart-count">3</span></a>
+    <a class="key ghost" data-nav="register" onclick="showPage('register', this)"><span>สมัครสมาชิก</span></a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ============ HOME ============ -->
+  <section id="home" class="page active">
+    <div class="hero">
+      <div>
+        <div class="eyebrow">OFFICIAL GEAR / SEASON 2026</div>
+        <h1>ลงสนามแบบ<br><span class="accent">มือโปร</span></h1>
+        <p>เจอร์ซีย์ทีมโปรด รองเท้าบาส ลูกบาสแท้ และอุปกรณ์ครบทุกไซซ์ — ของแท้ สเปกชัด พร้อมส่งทั่วประเทศ</p>
+        <div class="hero-actions">
+          <a class="key solid" onclick="showPage('products', document.querySelector('[data-nav=products]'))"><span>ช้อปเลย →</span></a>
+          <a class="key ghost" onclick="showPage('register', document.querySelector('[data-nav=register]'))"><span>สมัครสมาชิก</span></a>
+        </div>
+      </div>
+      <div class="court-art">
+        <div class="num">23</div>
+        <div class="tag">COURT / MVP</div>
+        <div class="tag corner">NEW DROP</div>
+        <svg viewBox="0 0 120 120" fill="none" stroke="#FFFFFF" stroke-width="2.5">
+          <circle cx="60" cy="60" r="36"/>
+          <path d="M24 60h72"/>
+          <path d="M60 24v72"/>
+          <path d="M32 32 Q60 60 32 88"/>
+          <path d="M88 32 Q60 60 88 88"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="scoreboard">
+      <div><div class="num mono">500+</div><div class="lbl">รายการสินค้า</div></div>
+      <div><div class="num mono">4</div><div class="lbl">หมวดหมู่หลัก</div></div>
+      <div><div class="num mono">1,000฿</div><div class="lbl">ขั้นต่ำส่งฟรี</div></div>
+      <div><div class="num mono">30 วัน</div><div class="lbl">เปลี่ยน/คืนได้</div></div>
+    </div>
+
+    <div class="eyebrow">หมวดหมู่สินค้า</div>
+    <div class="divider" style="margin-top:14px; margin-bottom:24px;"></div>
+    <div class="cat-grid">
+      <div class="cat-card" onclick="showPage('products', document.querySelector('[data-nav=products]')); filterCat('jersey')">
+        <div class="ic">👕</div><h3>เสื้อทีม</h3><p>JERSEYS / 40 ITEMS</p>
+      </div>
+      <div class="cat-card" onclick="showPage('products', document.querySelector('[data-nav=products]')); filterCat('shoes')">
+        <div class="ic">👟</div><h3>รองเท้าบาส</h3><p>SHOES / 65 ITEMS</p>
+      </div>
+      <div class="cat-card" onclick="showPage('products', document.querySelector('[data-nav=products]')); filterCat('gear')">
+        <div class="ic">🏀</div><h3>ลูกบาส & อุปกรณ์</h3><p>GEAR / 32 ITEMS</p>
+      </div>
+      <div class="cat-card" onclick="showPage('products', document.querySelector('[data-nav=products]')); filterCat('fan')">
+        <div class="ic">🧢</div><h3>ของสะสมแฟนบอล</h3><p>FAN GEAR / 24 ITEMS</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRODUCTS ============ -->
+  <section id="products" class="page">
+    <div class="eyebrow">แคตตาล็อกสินค้า</div>
+    <h2 style="font-size:32px; margin:12px 0 6px; text-transform:uppercase;">สินค้าทั้งหมด</h2>
+    <p style="color:var(--steel); font-size:14px;">กรองตามหมวดหมู่เพื่อดูสเปกแบบละเอียด</p>
+
+    <div class="filter-row">
+      <a class="key active-nav" data-cat="all" onclick="filterCat('all')"><span>ทั้งหมด</span></a>
+      <a class="key ghost" data-cat="jersey" onclick="filterCat('jersey')"><span>เสื้อทีม</span></a>
+      <a class="key ghost" data-cat="shoes" onclick="filterCat('shoes')"><span>รองเท้าบาส</span></a>
+      <a class="key ghost" data-cat="gear" onclick="filterCat('gear')"><span>ลูกบาส & อุปกรณ์</span></a>
+      <a class="key ghost" data-cat="fan" onclick="filterCat('fan')"><span>ของสะสมแฟนบอล</span></a>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+      <!-- Jerseys -->
+      <div class="p-card" data-cat="jersey">
+        <div class="p-thumb"><div class="stock-dot"><i></i>มีสินค้า</div>
+          <svg viewBox="0 0 100 100" fill="none" stroke="#0C2340" stroke-width="2.5"><path d="M35 20 L20 32 L28 42 L35 36 V80 H65 V36 L72 42 L80 32 L65 20 Q60 28 50 28 Q40 28 35 20Z"/><text x="50" y="65" font-size="20" fill="#0C2340" stroke="none" text-anchor="middle" font-family="Chakra Petch">23</text></svg>
+        </div>
+        <div class="p-body">
+          <h3>เจอร์ซีย์ Lakers #23</h3>
+          <div class="spec-rows"><div><span>FIT</span><span>AUTHENTIC</span></div><div><span>SIZE</span><span>S–XXL</span></div><div><span>FABRIC</span><span>MESH</span></div></div>
+          <div class="p-footer"><span class="price">฿2,490</span><a class="key small solid"><span>+ ตะกร้า</span></a></div>
+        </div>
+      </div>
+      <div class="p-card" data-cat="jersey">
+        <div class="p-thumb"><div class="stock-dot"><i></i>มีสินค้า</div>
+          <svg viewBox="0 0 100 100" fill="none" stroke="#0C2340" stroke-width="2.5"><path d="M35 20 L20 32 L28 42 L35 36 V80 H65 V36 L72 42 L80 32 L65 20 Q60 28 50 28 Q40 28 35 20Z"/><text x="50" y="65" font-size="20" fill="#0C2340" stroke="none" text-anchor="middle" font-family="Chakra Petch">30</text></svg>
+        </div>
+        <div class="p-body">
+          <h3>เจอร์ซีย์ Warriors #30</h3>
+          <div class="spec-rows"><div><span>FIT</span><span>SWINGMAN</span></div><div><span>SIZE</span><span>S–XXL</span></div><div><span>FABRIC</span><span>POLY</span></div></div>
+          <div class="p-footer"><span class="price">฿2,490</span><a class="key small solid"><span>+ ตะกร้า</span></a></div>
+        </div>
+      </div>
+      <!-- Shoes -->
+      <div class="p-card" data-cat="shoes">
+        <div class="p-thumb"><div class="stock-dot"><i></i>มีสินค้า</div>
+          <svg viewBox="0 0 100 100" fill="none" stroke="#0C2340" stroke-width="2.5"><path d="M15 65 Q20 45 40 42 L60 40 Q75 40 82 55 L85 65 Q85 72 78 72 L20 72 Q15 72 15 65Z"/><line x1="40" y1="50" x2="55" y2="46"/></svg>
+        </div>
+        <div class="p-body">
+          <h3>รองเท้าบาส Pro Grip</h3>
+          <div class="spec-rows"><div><span>CUSHION</span><span>AIR</span></div><div><span>SIZE</span><span>39–45</span></div><div><span>WT</span><span>340G</span></div></div>
+          <div class="p-footer"><span class="price">฿4,290</span><a class="key small solid"><span>+ ตะกร้า</span></a></div>
+        </div>
+      </div>
+      <div class="p-card" data-cat="shoes">
+        <div class="p-thumb"><div class="stock-dot" style="background:var(--panel);"><i style="background:var(--warn);"></i>เหลือน้อย</div>
+          <svg viewBox="0 0 100 100" fill="none" stroke="#0C2340" stroke-width="2.5"><path d="M15 65 Q20 45 40 42 L60 40 Q75 40 82 55 L85 65 Q85 72 78 72 L20 72 Q15 72 15 65Z"/><line x1="40" y1="50" x2="55" y2="46"/></svg>
+        </div>
+        <div class="p-body">
+          <h3>รองเท้าบาส StreetCourt</h3>
+          <div class="spec-rows"><div><span>CUSHION</span><span>FOAM</span></div><div><span>SIZE</span><span>38–44</span></div><div><span>WT</span><span>390G</span></div></div>
+          <div class="p-footer"><span class="price">฿2,990</span><a class="key small solid"><span>+ ตะกร้า</span></a></div>
+        </div>
+      </div>
+      <!-- Gear -->
+      <div class="p-card" data-cat="gear">
+        <div class="p-thumb"><div class="stock-dot"><i></i>มีสินค้า</div>
+          <svg viewBox="0 0 100 100" fill="none" stroke="#0C2340" stroke-width="2.5"><circle cx="50" cy="50" r="28"/><path d="M22 50h56M50 22v56M30 30 Q50 50 30 70M70 30 Q50 50 70 70"/></svg>
+        </div>
+        <div class="p-body">
+          <h3>ลูกบาสเกตบอลแท้ Size 7</h3>
+          <div class="spec-rows"><div><span>MAT</span><span>COMPOSITE</span></div><div><span>SIZE</span><span>7</span></div><div><span>GRIP</span><span>DEEP</span></div></div>
+          <div class="p-footer"><span class="price">฿1,190</span><a class="key small solid"><span>+ ตะกร้า</span></a></div>
+        </div>
+      </div>
+      <div class="p-card" data-cat="gear">
+        <div class="p-thumb"><div class="stock-dot"><i></i>มีสินค้า</div>
+          <svg viewBox="0 0 100 100" fill="none" stroke="#0C2340" stroke-width="2.5"><rect x="35" y="20" width="30" height="60" rx="14"/></svg>
+        </div>
+        <div class="p-body">
+          <h3>สนับเข่า/ข้อศอกบาส</h3>
+          <div class="spec-rows"><div><span>MAT</span><span>NEOPRENE</span></div><div><span>SIZE</span><span>M–XL</span></div><div><span>PACK</span><span>2 PCS</span></div></div>
+          <div class="p-footer"><span class="price">฿590</span><a class="key small solid"><span>+ ตะกร้า</span></a></div>
+        </div>
+      </div>
+      <!-- Fan gear -->
+      <div class="p-card" data-cat="fan">
+        <div class="p-thumb"><div class="stock-dot"><i></i>มีสินค้า</div>
+          <svg viewBox="0 0 100 100" fill="none" stroke="#0C2340" stroke-width="2.5"><path d="M20 45 Q50 20 80 45 L80 55 Q50 35 20 55Z"/><circle cx="50" cy="60" r="14"/></svg>
+        </div>
+        <div class="p-body">
+          <h3>หมวกแก๊ปทีม NBA</h3>
+          <div class="spec-rows"><div><span>FIT</span><span>ADJUSTABLE</span></div><div><span>MAT</span><span>COTTON</span></div><div><span>SIZE</span><span>FREE</span></div></div>
+          <div class="p-footer"><span class="price">฿890</span><a class="key small solid"><span>+ ตะกร้า</span></a></div>
+        </div>
+      </div>
+      <div class="p-card" data-cat="fan">
+        <div class="p-thumb"><div class="stock-dot"><i></i>มีสินค้า</div>
+          <svg viewBox="0 0 100 100" fill="none" stroke="#0C2340" stroke-width="2.5"><rect x="25" y="35" width="50" height="40" rx="6"/><path d="M38 35 V25 Q38 18 50 18 Q62 18 62 25 V35"/></svg>
+        </div>
+        <div class="p-body">
+          <h3>กระเป๋าใส่อุปกรณ์บาส</h3>
+          <div class="spec-rows"><div><span>CAP</span><span>35L</span></div><div><span>MAT</span><span>NYLON</span></div><div><span>WT</span><span>450G</span></div></div>
+          <div class="p-footer"><span class="price">฿1,290</span><a class="key small solid"><span>+ ตะกร้า</span></a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REGISTER ============ -->
+  <section id="register" class="page">
+    <div class="form-wrap">
+      <div class="eyebrow" style="justify-content:center;">JOIN THE TEAM</div>
+      <h2 class="form-title">สมัครสมาชิก</h2>
+      <p class="form-sub">สมัครเพื่อรับสิทธิ์ติดตามออเดอร์และส่วนลดสมาชิก</p>
+      <div class="field-row">
+        <div class="field"><label>ชื่อ</label><input type="text" placeholder="ชื่อจริง"></div>
+        <div class="field"><label>นามสกุล</label><input type="text" placeholder="นามสกุล"></div>
+      </div>
+      <div class="field"><label>อีเมล</label><input type="email" placeholder="you@example.com"></div>
+      <div class="field"><label>เบอร์โทรศัพท์</label><input type="tel" placeholder="08X-XXX-XXXX"></div>
+      <div class="field"><label>รหัสผ่าน</label><input type="password" placeholder="••••••••"></div>
+      <div class="field"><label>ยืนยันรหัสผ่าน</label><input type="password" placeholder="••••••••"></div>
+      <a class="key solid wide" style="margin-top:8px;" onclick="showPage('products', document.querySelector('[data-nav=products]'))"><span>สร้างบัญชี →</span></a>
+      <p class="form-foot">มีบัญชีอยู่แล้ว? <b>เข้าสู่ระบบ</b></p>
+    </div>
+  </section>
+
+  <!-- ============ CART / ORDER SUMMARY ============ -->
+  <section id="cart" class="page">
+    <div class="eyebrow">ORDER SUMMARY</div>
+    <h2 style="font-size:32px; margin:12px 0 6px; text-transform:uppercase;">ตะกร้าสินค้า</h2>
+
+    <div class="cart-layout">
+      <div>
+        <div class="cart-item">
+          <div class="thumb"><svg viewBox="0 0 100 100" fill="none" stroke="#0C2340" stroke-width="2.5"><path d="M35 20 L20 32 L28 42 L35 36 V80 H65 V36 L72 42 L80 32 L65 20 Q60 28 50 28 Q40 28 35 20Z"/></svg></div>
+          <div><h4>เจอร์ซีย์ Lakers #23</h4><div class="sub">SKU: COURT-JSY-023</div></div>
+          <div class="qty-stepper"><button onclick="changeQty(this,-1)">−</button><span>1</span><button onclick="changeQty(this,1)">+</button></div>
+          <div class="price mono">฿2,490</div>
+        </div>
+        <div class="cart-item">
+          <div class="thumb"><svg viewBox="0 0 100 100" fill="none" stroke="#0C2340" stroke-width="2.5"><path d="M15 65 Q20 45 40 42 L60 40 Q75 40 82 55 L85 65 Q85 72 78 72 L20 72 Q15 72 15 65Z"/></svg></div>
+          <div><h4>รองเท้าบาส Pro Grip</h4><div class="sub">SKU: COURT-SHO-011</div></div>
+          <div class="qty-stepper"><button onclick="changeQty(this,-1)">−</button><span>1</span><button onclick="changeQty(this,1)">+</button></div>
+          <div class="price mono">฿4,290</div>
+        </div>
+        <div class="cart-item">
+          <div class="thumb"><svg viewBox="0 0 100 100" fill="none" stroke="#0C2340" stroke-width="2.5"><circle cx="50" cy="50" r="28"/></svg></div>
+          <div><h4>ลูกบาสเกตบอลแท้ Size 7</h4><div class="sub">SKU: COURT-GER-007</div></div>
+          <div class="qty-stepper"><button onclick="changeQty(this,-1)">−</button><span>1</span><button onclick="changeQty(this,1)">+</button></div>
+          <div class="price mono">฿1,190</div>
+        </div>
+      </div>
+
+      <div class="summary-box">
+        <div class="eyebrow" style="margin-bottom:16px;">สรุปยอด</div>
+        <div class="summary-row"><span>ยอดรวมสินค้า (3 ชิ้น)</span><span class="val">฿7,970</span></div>
+        <div class="summary-row"><span>ค่าจัดส่ง</span><span class="val">คำนวณในขั้นถัดไป</span></div>
+        <div class="summary-row"><span>ภาษี (VAT 7%)</span><span class="val">฿558</span></div>
+        <div class="promo">
+          <input type="text" placeholder="โค้ดส่วนลด">
+          <a class="key small ghost"><span>ใช้โค้ด</span></a>
+        </div>
+        <div class="summary-row total"><span>ยอดชำระ</span><span class="val">฿8,528</span></div>
+        <a class="key solid wide" style="margin-top:14px;" onclick="showPage('shipping', document.querySelector('[data-nav=cart]'))"><span>ไปที่การจัดส่ง →</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SHIPPING ============ -->
+  <section id="shipping" class="page">
+    <div class="eyebrow">SHIPPING DETAILS</div>
+    <h2 style="font-size:32px; margin:12px 0 6px; text-transform:uppercase;">การจัดส่ง</h2>
+
+    <div class="ship-layout">
+      <div>
+        <div class="field"><label>ชื่อผู้รับ</label><input type="text" placeholder="ชื่อ-นามสกุลผู้รับ"></div>
+        <div class="field"><label>เบอร์โทรศัพท์</label><input type="tel" placeholder="08X-XXX-XXXX"></div>
+        <div class="field"><label>ที่อยู่จัดส่ง</label><input type="text" placeholder="บ้านเลขที่ ถนน แขวง/ตำบล เขต/อำเภอ"></div>
+        <div class="field-row">
+          <div class="field"><label>จังหวัด</label><input type="text" placeholder="กรุงเทพมหานคร"></div>
+          <div class="field"><label>รหัสไปรษณีย์</label><input type="text" placeholder="10XXX"></div>
+        </div>
+
+        <div class="eyebrow" style="margin:26px 0 14px;">วิธีจัดส่ง</div>
+        <div class="ship-method selected" onclick="selectShip(this)">
+          <div><h4>จัดส่งมาตรฐาน</h4><div class="eta">ถึงภายใน 3–5 วันทำการ</div></div>
+          <div class="price mono">ฟรี</div>
+        </div>
+        <div class="ship-method" onclick="selectShip(this)">
+          <div><h4>จัดส่งด่วน</h4><div class="eta">ถึงภายใน 1–2 วันทำการ</div></div>
+          <div class="price mono">฿90</div>
+        </div>
+      </div>
+
+      <div class="summary-box">
+        <div class="eyebrow" style="margin-bottom:16px;">สรุปคำสั่งซื้อ</div>
+        <div class="summary-row"><span>สินค้า (3 ชิ้น)</span><span class="val">฿7,970</span></div>
+        <div class="summary-row"><span>ค่าจัดส่ง</span><span class="val">ฟรี</span></div>
+        <div class="summary-row"><span>ภาษี (VAT 7%)</span><span class="val">฿558</span></div>
+        <div class="summary-row total"><span>ยอดชำระทั้งหมด</span><span class="val">฿8,528</span></div>
+        <a class="key solid wide" style="margin-top:14px;"><span>ยืนยันคำสั่งซื้อ →</span></a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div>COURT. © 2026 — OFFICIAL BASKETBALL GEAR STORE</div>
+  <div>MOCKUP / DESIGN PREVIEW</div>
+</footer>
+
+<script>
+  function showPage(id, navEl){
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav.links .key').forEach(k => k.classList.remove('active-nav'));
+    document.querySelectorAll('nav.links .key').forEach(k => k.classList.add('ghost'));
+    if(navEl){ navEl.classList.add('active-nav'); navEl.classList.remove('ghost'); }
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function filterCat(cat){
+    document.querySelectorAll('.filter-row .key').forEach(k => {
+      k.classList.remove('active-nav'); k.classList.add('ghost');
+    });
+    const activeBtn = document.querySelector('.filter-row [data-cat="'+cat+'"]');
+    if(activeBtn){ activeBtn.classList.add('active-nav'); activeBtn.classList.remove('ghost'); }
+    document.querySelectorAll('#productGrid .p-card').forEach(card => {
+      card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'flex' : 'none';
+    });
+  }
+
+  function changeQty(btn, delta){
+    const span = btn.parentElement.querySelector('span');
+    let val = parseInt(span.textContent) + delta;
+    if(val < 1) val = 1;
+    span.textContent = val;
+  }
+
+  function selectShip(el){
+    document.querySelectorAll('.ship-method').forEach(m => m.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+</script>
+
+</body>
+</html>
